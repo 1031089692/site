@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/js/jquery-3.4.1.js"></script>
+</head>
+<body>
+    <form>
+    <input id="user">
+    <input id="pwd">
+    <input type="button" id="login_btn" value="提交"><span class="error"></span>
+    {% csrf_token %}
+        </form>
+    <script>
+        $("#login_btn").click(function(){
+            // 发送ajax请求登录认证
+            $.ajax({
+                url: "/login/",
+                type: "post",
+                data: {
+                    user:$("#user").val(),
+                    pwd:$("#pwd").val(),
+                    csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+                },
+                success:function (response) {
+                    var res = JSON.parse(response);
+                    console.log(res);
+                    if (res.user){
+                        //登录成功
+                        location.href="/index/"
+                    }
+                    else{
+                        //登录失败
+                        $(".error").html(res.data).css("color", "red");
+                        setTimeout(function () {
+                            //一秒后清空
+                            $(".error").html("")
+                        },1000)
+                    }
+                }
+            })
+        })
+    </script>
+</body>
+</html>
