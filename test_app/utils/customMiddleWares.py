@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render, HttpResponse
 from test_app.models import *
 from django.utils import timezone
 import datetime
-from datetime import timedelta
+
 
 class SessionCheck(MiddlewareMixin):
     """
@@ -66,7 +66,7 @@ class AccessFrequencyVerification2(MiddlewareMixin):
                 else:
                     # 60s之后登录
                     AccessFrequencyVerification.objects.filter(ip=ip).update(Access_time=time)
-                if a > 20:
+                if a > 200:
                     return redirect("/error/")
                 else:
                     return None

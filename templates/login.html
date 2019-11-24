@@ -2,45 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="/static/js/jquery-3.4.1.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'img/bc.jpg' %}">
+
 </head>
 <body>
-    <form>
-    <input id="user">
-    <input id="pwd">
-    <input type="button" id="login_btn" value="提交"><span class="error"></span>
-    {% csrf_token %}
-        </form>
-    <script>
-        $("#login_btn").click(function(){
-            // 发送ajax请求登录认证
-            $.ajax({
-                url: "/login/",
-                type: "post",
-                data: {
-                    user:$("#user").val(),
-                    pwd:$("#pwd").val(),
-                    csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
-                },
-                success:function (response) {
-                    var res = JSON.parse(response);
-                    console.log(res);
-                    if (res.user){
-                        //登录成功
-                        location.href="/index/"
-                    }
-                    else{
-                        //登录失败
-                        $(".error").html(res.data).css("color", "red");
-                        setTimeout(function () {
-                            //一秒后清空
-                            $(".error").html("")
-                        },1000)
-                    }
-                }
-            })
-        })
-    </script>
+    <div class="container">
+        <img src="/static/img/bc.jpg" alt="">
+        <div class="panel">
+            <div class="content login">
+                <div class="switch">
+                    <span id='login' class='active'>Login</span><span>/</span><span id='signup'>Sign Up</span>
+                </div>
+                <form action="">
+                    <div id='email' class="input"  placeholder='Email'><input type="text"></div>
+                    <div class="input" placeholder='Username'><input type="text"></div>
+                    <div class="input" placeholder='Password'><input type="password"></div>
+                    <div id='repeat' class="input" placeholder='Repeat'><input type="password"></div>
+                    <span>Forget?</span>
+                    <button>LOGIN</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $('#login').click(function(){
+        $('.switch span').removeClass('active');
+        $(this).addClass('active');
+
+        $(this).parents('.content').removeClass('signup');
+        $(this).parents('.content').addClass('login');
+
+        $('form button').text('LOGIN')
+
+    });
+
+    $('#signup').click(function(){
+        $('.switch span').removeClass('active');
+        $(this).addClass('active');
+
+        $(this).parents('.content').removeClass('login');
+        $(this).parents('.content').addClass('signup');
+
+        $('form button').text('SIGNUP');
+    });
+
+    $('.input input').on('focus',function(){
+        $(this).parent().addClass('focus');
+    });
+
+    $('.input input').on('blur',function(){
+        if($(this).val() === '')
+            $(this).parent().removeClass('focus');
+    });
+</script>
 </html>
