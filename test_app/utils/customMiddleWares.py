@@ -12,7 +12,7 @@ class SessionCheck(MiddlewareMixin):
     其余接口没有session的一律重定向到login
     """
     def process_request(self, request):
-        if request.path in ["/login/"]:
+        if request.path in ["/login/"] or ["/reg/"]:
             return None
         else:
             slogin = request.session.get("login")

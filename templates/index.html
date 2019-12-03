@@ -34,10 +34,10 @@
                         <td>编辑</td>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="tbody" id="tbody">
                     {% for order in current_page %}
                         <tr>
-                            <td>{{ order.oid }}</td>
+                            <td>{{ forloop.counter|add:var}}</td>
                             <td>{{ order.order_num }}</td>
                             <td>{{ order.price }}</td>
                             <td>{{ order.pay_date | date:'Y-m-d H:i:s'}}</td>
@@ -97,7 +97,10 @@
                     console.log(obj);
                     if(obj.code===200){
                         //删除成功
-                        ele.remove()
+                        ele.remove();
+                        $(".tbody tr").each(function (i,j) {
+                            $(this).children().first().html(i+1+parseInt({{ var }}))
+                        })
                     }
                     else{
                         //删除失败

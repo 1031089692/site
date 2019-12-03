@@ -7,6 +7,8 @@ class UserInfo(models.Model):
     # 用户信息表
     user = models.CharField(max_length=32)
     pwd = models.CharField(max_length=32)
+    email = models.CharField(max_length=32)
+    r_pwd = models.CharField(max_length=32)
 
 
 class AccessFrequencyVerification(models.Model):
