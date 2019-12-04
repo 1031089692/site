@@ -12,7 +12,7 @@
             font-weight: bold;
             padding: 30px 20px 0 20px;
         }
-        .null_box{
+        .null_box2{
             height: 30px;
             width: max-content;
         }
@@ -29,7 +29,7 @@
         <a href="/reg/"><sapn >跳转注册</sapn></a>
         <a href="/login/"><sapn >跳转登陆</sapn></a>
     </div>
-    <div class="null_box"></div>
+    <div class="null_box2"></div>
     <div class = "col-md-4 col-md-offset-4">
               <div class="form-group">
                  <label for="user">用户名</label>
@@ -39,6 +39,19 @@
                 <label for="pwd">密码</label>
                 <input type="password" class="form-control" id="pwd" placeholder="pwd" name="pwd">
               </div>
+              <div class="form-group">
+                  <label for="">验证码</label>
+                  <div class="row">
+                      <div class="col-md-6">
+                          <img width="300" height="35" src="/get_valid_img" alt="" id="img">
+                      </div>
+                      <div class="col-md-6">
+                          <input type="text" class="form-control" id="validcode">
+                      </div>
+
+                  </div>
+              </div>
+
               <div class="button">
                   <input type="submit" class="btn btn-default" id="login_btn" value="提交">
                   <span class="error"></span>
@@ -55,7 +68,8 @@
                 data: {
                     user:$("#user").val(),
                     pwd:$("#pwd").val(),
-                    csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+                    csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                    validcode:$("#validcode").val(),
                 },
                 success:function (response) {
                     var res = JSON.parse(response);
@@ -64,8 +78,18 @@
                         //登录成功
                         location.href="/index/"
                     }
+                    if (res.data==="验证码输入错误"){
+                        $("#img").click(function () {
+                            this.src+="?"
+                        });
+                        $(".error").html(res.data).css("color", "red");
+                            setTimeout(function () {
+                                //1秒后清空
+                                $(".error").html("")
+                                },1000);
+                    }
                     else{
-                        //登录失败
+                        //账号密码错误
                         $(".error").html(res.data).css("color", "red");
                         setTimeout(function () {
                             //一秒后清空
@@ -74,6 +98,10 @@
                     }
                 }
             })
+        });
+        //验证码刷新:
+        $("#img").click(function () {
+            this.src+="?"
         })
     </script>
 </body>

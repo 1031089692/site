@@ -5,10 +5,12 @@ from django.urls import reverse
 from django.forms import widgets
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django import forms
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
 # Create your views here.
 import json
-import time
 import random
+import time
 
 
 class UserForm(forms.Form):
@@ -81,17 +83,60 @@ def reg(request):
             return render(request, "form_reg.html", locals())
 
 
+def get_random_color():
+    a = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255),)
+    return a
+
+
+def get_valid_img(request):
+    img = Image.new("RGB", (350, 35), get_random_color())   # 自动生成图
+    draw = ImageDraw.Draw(img)     # 插入画笔
+    font = ImageFont.truetype("static/font/fullhouse.ttf", 32)   # 引入字体及大小
+    keep_str = ""
+    for i in range(6):  # 随机字符串
+        random_num = str(random.randint(0, 9))
+        random_lowalf = chr(random.randint(97, 122))
+        random_upperalf = chr(random.randint(65, 90))
+        random_char = random.choice([random_num, random_lowalf, random_upperalf])
+        draw.text((i*30+80, 0), random_char, get_random_color(), font=font)
+        keep_str += random_char
+        request.session['keep_str'] = keep_str
+    width = 350
+    height = 35
+    # 加噪线
+    for i in range(10):
+        x1 = random.randint(0, width)
+        x2 = random.randint(0, width)
+        y1 = random.randint(0, height)
+        y2 = random.randint(0, height)
+        draw.line((x1, y1, x2, y2), fill=get_random_color())
+    # 加噪点
+    for i in range(10):
+        draw.point([random.randint(0, width), random.randint(0, height)], fill=get_random_color())
+        x = random.randint(0, width)
+        y = random.randint(0, height)
+        draw.arc((x, y, x+4, y+4,), 0, 90, fill=get_random_color())
+    # 内容写入内存
+    f = BytesIO()
+    img.save(f, "png")
+    data = f.getvalue()
+    return HttpResponse(data)
+
+
 def login(request):
     if request.method == 'GET':
         return render(request, 'login.html')
     elif request.method == 'POST':
         res = {"user": None, "data": None}
-        # print(request.POST)
         user = request.POST.get("user")
         pwd = request.POST.get("pwd")
+        validcode = request.POST.get("validcode")
         user_obj = UserInfo.objects.filter(user=user, pwd=pwd).first()
         import json
-        if user_obj:
+        if validcode.upper() != request.session.get("keep_str").upper():    # 不区分大小写。
+            res["data"] = "验证码输入错误"
+            return HttpResponse(json.dumps(res))
+        elif user_obj:
             res["user"] = user
             res["data"] = "登录成功"
             request.session["name"] = user

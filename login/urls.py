@@ -27,5 +27,6 @@ urlpatterns = [
     re_path('edit_order/(\d+)', views.edit_order, name='bianji'),
     path('add_order/', views.add_order, name='zengjia'),
     re_path('del_ajax_order/(\d+)', views.del_ajax_order),
-    path('reg/', views.reg)
+    path('reg/', views.reg),
+    path('get_valid_img/', views.get_valid_img)
 ]
