@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>注册</title>
+    <title>表单注册</title>
     <style>
+        {% load staticfiles %}
+        .text, .text2, .text3{
+            color: chartreuse !important;
+        }
         .error{
             color: red;
         }
@@ -12,11 +16,14 @@
             font-size: 16px;
             font-weight: bold;
             padding: 30px 20px 0 20px;
-
         }
         .null_box{
             height: 30px;
             width: max-content;
+        }
+        body{
+            background-image: url('{% static 'img/hc.png' %}');
+            background-size: cover;
         }
 
     </style>
@@ -25,8 +32,9 @@
 </head>
 <body>
     <div class="header">
-        <a href="/reg/"><sapn >跳转注册</sapn></a>
-        <a href="/login/"><sapn >跳转登陆</sapn></a>
+        <a href="/reg/"><sapn class="text">跳转表单注册</sapn></a>
+        <a href="/login/"><sapn class="text2">跳转登陆</sapn></a>
+        <a href="/ajax_reg/"><sapn class="text3">跳转ajax注册</sapn></a>
     </div>
     <div class="null_box"></div>
 

@@ -3,41 +3,28 @@ from test_app.models import *
 from django.core.paginator import Paginator, EmptyPage
 from django.urls import reverse
 from django.forms import widgets
-from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
+from django.core.exceptions import ValidationError
 from django import forms
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
+from django.http import JsonResponse
 # Create your views here.
 import json
 import random
-import time
+import re
 
 
 class UserForm(forms.Form):
-    msg = {
-        "required": "该字段不能为空"
-    }
-    user = forms.CharField(
-        min_length=5,
-        label="用户名",
-        error_messages=msg,
-        widget=widgets.TextInput(attrs={"class": "form-control"})
-    )
-    pwd = forms.CharField(
-        label="密码",
-        error_messages=msg,
-        widget=widgets.PasswordInput(attrs={"class": "form-control"})
-    )
-    r_pwd = forms.CharField(
-        label="再次输入密码",
-        error_messages=msg,
-        widget=widgets.PasswordInput(attrs={"class": "form-control"})
-    )
-    email = forms.EmailField(
-        label="邮箱",
-        error_messages={"invalid": "邮箱格式错误"},
-        widget=widgets.EmailInput(attrs={"class": "form-control"})
-    )
+    msg = {"required": "该字段不能为空"}
+    user = forms.CharField(min_length=5, label="用户名", error_messages=msg, )
+    pwd = forms.CharField(label="密码", error_messages=msg, widget=widgets.PasswordInput())
+    r_pwd = forms.CharField(label="再次输入密码", error_messages=msg, widget=widgets.PasswordInput())
+    email = forms.EmailField(label="邮箱", error_messages={"invalid": "邮箱格式错误"},)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for filed in self.fields.values():
+            filed.widget.attrs.update({"class": "form-control"})
 
     def clean_user(self):
         val = self.cleaned_data.get("user")
@@ -50,19 +37,23 @@ class UserForm(forms.Form):
     def clean_pwd(self):
         val = self.cleaned_data.get("pwd")
         if val.isdigit():
-            raise ValidationError("密码不能是纯数字")
+            raise ValidationError("密码不能是纯数字v")
         else:
             return val
+
+    def clean_email(self):
+        val = self.cleaned_data.get("email")
+        if re.search('\\w[-\\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\\.)+[A-Za-z]{2,14}', val):   # 凡是\都换成\\
+            return val
+        else:
+            raise ValidationError("邮箱格式错误")
 
     def clean(self):
         pwd = self.cleaned_data.get("pwd")
         r_pwd = self.cleaned_data.get("r_pwd")
 
-        if pwd and r_pwd:
-            if pwd == r_pwd:
-                return self.cleaned_data
-            else:
-                raise ValidationError("两次密码输入不一致")
+        if pwd and r_pwd and pwd != r_pwd:
+            self.add_error("r_pwd", ValidationError("两次密码输入不一致"))
         else:
             return self.cleaned_data
 
@@ -81,6 +72,27 @@ def reg(request):
             if form.errors.get("__all__"):
                 g_error = form.errors.get("__all__")[0]
             return render(request, "form_reg.html", locals())
+
+
+def ajax_reg(request):
+    if request.method == 'GET':
+        form = UserForm()       # 通过form标签渲染html
+        return render(request, "ajax_reg.html", locals())
+    elif request.method == 'POST':
+        try:
+            res = {"user": None, "data": ""}
+            form = UserForm(request.POST)
+            if form.is_valid():
+                UserInfo.objects.create(**form.cleaned_data)
+                res["user"] = form.cleaned_data.get("user")
+                res["data"] = "成功"
+            else:
+                res["data"] = form.errors
+            return HttpResponse(json.dumps(res))
+        except Exception as e:
+            return e
+    else:
+        pass
 
 
 def get_random_color():
