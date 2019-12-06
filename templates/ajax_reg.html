@@ -8,6 +8,11 @@
         {% load staticfiles %}
         .text, .text2, .text3{
             color: chartreuse !important;
+
+        }
+        .text:hover, .text2:hover, .text3:hover{
+            color: crimson !important;
+
         }
         .error{
             color: red;
@@ -49,7 +54,7 @@
                         <span class="error pull-right"></span>
                         </div>
                     {% endfor %}
-                    <input type="submit" class="btn btn-success pull-right reg_btn" value="注册">
+                    <input class="btn btn-success pull-right reg_btn" value="注册">
                 </form>
             </div>
         </div>

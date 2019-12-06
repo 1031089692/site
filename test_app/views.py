@@ -8,7 +8,6 @@ from django import forms
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 from django.http import JsonResponse
-# Create your views here.
 import json
 import random
 import re
@@ -65,6 +64,7 @@ def reg(request):
     else:
         form = UserForm(request.POST)    # 数据校验
         if form.is_valid():
+            # form.cleaned_data.pop("r_pwd")
             UserInfo.objects.create(**form.cleaned_data)
             return HttpResponse("ok")
         else:
@@ -83,12 +83,13 @@ def ajax_reg(request):
             res = {"user": None, "data": ""}
             form = UserForm(request.POST)
             if form.is_valid():
+                # form.cleaned_data.pop("r_pwd")
                 UserInfo.objects.create(**form.cleaned_data)
                 res["user"] = form.cleaned_data.get("user")
                 res["data"] = "成功"
             else:
                 res["data"] = form.errors
-            return HttpResponse(json.dumps(res))
+            return JsonResponse(res)
         except Exception as e:
             return e
     else:
