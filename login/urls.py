@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from test_app import views
 
 urlpatterns = [
@@ -29,5 +29,7 @@ urlpatterns = [
     re_path('del_ajax_order/(\\d+)', views.del_ajax_order),
     path('reg/', views.reg),
     path('get_valid_img/', views.get_valid_img),
-    path('ajax_reg/', views.ajax_reg)
+    path('ajax_reg/', views.ajax_reg),
+    path('CBV_app/', include('CBV_app.urls'))
 ]
+
