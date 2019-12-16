@@ -66,7 +66,8 @@ class AccessFrequencyVerification2(MiddlewareMixin):
                 else:
                     # 60s之后登录
                     AccessFrequencyVerification.objects.filter(ip=ip).update(Access_time=time)
-                if a > 200:
+                    AccessFrequencyVerification.objects.filter(ip=ip).update(Number_visits=0)
+                if a > 20:
                     return redirect("/error/")
                 else:
                     return None

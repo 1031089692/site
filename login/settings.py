@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'test_app.utils.customMiddleWares.SessionCheck',
-    # 'test_app.utils.customMiddleWares.AccessFrequencyVerification2',
+    'test_app.utils.customMiddleWares.AccessFrequencyVerification2',
 ]
 
 ROOT_URLCONF = 'login.urls'

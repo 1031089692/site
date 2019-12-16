@@ -180,7 +180,7 @@ def index(request):
     Order.objects.bulk_create(order_list)
     return HttpResponse('OK')
     """
-    order_list = Order.objects.all()
+    order_list = Order.objects.all().order_by("oid")   # 排序防止弹出警告
     paginator = Paginator(order_list, 10)
     try:
         current_page_num = request.GET.get("page", 1)  # 当前页码数,取值取不到默认为1。

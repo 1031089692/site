@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <aside class="right-side">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                订单列表
+                <small>Control panel</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Hover Data Table</h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body table-responsive">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <td>编号</td>
+                                    <td>订单号</td>
+                                    <td>付款金额</td>
+                                    <td>付款时间</td>
+                                    <td>订单状态</td>
+                                    <td>顾客ID</td>
+                                    <td>食物ID</td>
+                                    <td>编辑</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for order in current_page %}
+                                    <tr>
+                                        <td>{{ forloop.counter|add:var }}</td>
+                                        <td>{{ order.order_num }}</td>
+                                        <td>{{ order.price }}</td>
+                                        <td>{{ order.pay_date | date:'Y-m-d H:i:s' }}</td>
+                                        <td>{{ order.customer_id }}</td>
+                                        <td>{{ order.order_status }}</td>
+                                        <td>{{ order.food }}</td>
+                                        <td>
+                                            <button pk="{{ order.oid }}" class="btn btn-warning btn-sm delbtn">ajax删除
+                                            </button>
+                                            <a href="{% url 'bianji' order.oid %}" class="btn btn-warning btn-sm">编辑</a>
+                                            <a href="{% url 'shanchu' order.oid %}" class="btn btn-danger btn-sm">表单删除</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div>
+            </div>
+
+        </section><!-- /.content -->
+    </aside><!-- /.right-side -->
+{% endblock %}
+
+    <script src="/static/js/jquery-3.4.1.js"></script>
+    <script>
+        //为ajax删除按钮绑定事件
+        $(".delbtn").click(function () {
+            var pk=$(this).attr("pk");
+            var ele = $(this).parent().parent();
+            //发送删除订单请求
+            $.ajax({
+                url: "/del_ajax_order/"+pk,   //这里最前面如果没有/意味着拿当前页面路径拼接，加了之后意味着只拿ip端口拼
+                type: "post",
+                data: {
+                    csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+                },
+                success:function (response) {
+                    var obj = JSON.parse(response);
+                    console.log(obj);
+                    if(obj.code===200){
+                        //删除成功
+                        ele.remove();
+                        $(".tbody tr").each(function (i,j) {
+                            $(this).children().first().html(i+1+parseInt({{ var }}))
+                        })
+                    }
+                    else{
+                        //删除失败
+                    }
+                }
+            })
+        })
+    </script>
