@@ -1,0 +1,165 @@
+<style>
+    .test_input{
+        width: 180px;
+        height: 35px;
+    }
+    .placeholder{
+        padding: 0 0 10px 0;
+    }
+    .test_button{
+        height: 30px;
+    }
+</style>
+
+{% extends "base.html" %}
+
+{% block content %}
+    {% load staticfiles %}
+    <aside class="right-side">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                用户列表
+                <small>Control panel</small>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+
+            <div class="placeholder"></div>
+            <input type="text" name="q" class="test_input" placeholder="按用户姓名过滤"/>
+            <button type="text" class="test_button">Search</button>
+            {% csrf_token %}
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                                <div class="box-header">
+                            <h3 class="box-title">Hover Data Table</h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body table-responsive">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <td>ID</td>
+                                    <td>用户姓名</td>
+                                    <td>微信昵称</td>
+                                    <td>性别</td>
+                                    <td>年龄</td>
+                                    <td>手机号</td>
+                                    <td>城市</td>
+                                    <td>创建日期</td>
+                                    <td>是否会员</td>
+                                    <td>是否测试用户</td>
+{#                                    <td>操作</td>#}
+                                </tr>
+                                </thead>
+                                <tbody>
+{#                                {% for user in current_page %}#}
+                                    <tr class="gl_text">
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+                                          <td></td>
+{#                                        <td>{{ forloop.counter|add:var }}</td>#}
+{#                                        <td>{{ user.name }}</td>#}
+{#                                        <td>{{ user.WX_nickname }}</td>#}
+{#                                        <td>{{ user.gender }}</td>#}
+{#                                        <td>{{ user.age }}</td>#}
+{#                                        <td>{{ user.phone_number }}</td>#}
+{#                                        <td>{{ user.city }}</td>#}
+{#                                        <td>{{ user.create_time  | date:'Y-m-d H:i:s' }}</td>#}
+{#                                        <td>{{ user.vip_grade }}</td>#}
+{#                                        <td>{{ user.is_test }}</td>#}
+{#                                        <td>#}
+{#                                            <a pk="{{ order.oid }}" class="btn btn-danger btn-sm delbtn233">删除</a>#}
+{#                                            <a href="{% url 'bianji' order.oid %}" class="btn btn-warning btn-sm">编辑</a>#}
+{#                                        </td>#}
+                                    </tr>
+{#                                {% endfor %}#}
+                                </tbody>
+                            </table>
+                        </div><!-- /.box-body -->
+                        <nav aria-label="Page navigation" style="text-align: center">
+                            <ul class="pagination">
+                                {% if current_page.has_previous %}
+                                    <li><a href="?page={{ current_page.previous_page_number }}" aria-label="Previous">上一页</a>
+                                    </li>
+                                {% else %}
+                                    <li class="disabled"><a href="">上一页</a></li>
+                                {% endif %}
+
+                                {% for num in paginator.page_range %}
+                                    {% if num == current_page_num %}
+                                        <li class="active"><a href="?page={{ num }}">{{ num }}</a></li>
+                                    {% else %}
+                                        <li><a href="?page={{ num }}">{{ num }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if current_page.has_next %}
+                                    <li><a href="?page={{ current_page.next_page_number }}"
+                                           aria-label="Previous">下一页</a></li>
+                                {% else %}
+                                    <li class="disabled"><a href="">下一页</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div><!-- /.box -->
+                </div>
+            </div>
+        </section><!-- /.content -->
+    </aside><!-- /.right-side -->
+{% endblock %}
+
+{% block js %}
+<script src="/static/js/jquery-3.4.1.js"></script>
+
+<script>
+    $(".test_button").click(function () {
+        var content = $('.test_input').val();
+        $.ajax({
+            url: "/CBV_app/post_customer/",
+            type: "post",
+            data:{
+                csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                content: content,
+            },
+        success: function (response) {
+            var obj = response.data;
+            console.log(obj.length);
+            var html = '';
+            for (var i=0; i<obj.length; i++){
+                html = html + '<td>' + obj[i].id + '</td>';
+                html = html + '<td>' + obj[i].name + '</td>';
+                html = html + '<td>' + obj[i].WX_nickname + '</td>';
+                html = html + '<td>' + obj[i].gender + '</td>';
+                html = html + '<td>' + obj[i].age + '</td>';
+                html = html + '<td>' + obj[i].phone_number + '</td>';
+                html = html + '<td>' + obj[i].city + '</td>';
+                html = html + '<td>' + obj[i].create_time + '</td>';
+                html = html + '<td>' + obj[i].vip_grade + '</td>';
+                html = html + '<td>' + obj[i].is_test + '</td>';
+            }
+            $('.gl_text').html(html)
+        },
+            error:function () {
+                alert("查询失败！")
+            }
+        })
+    })
+
+</script>
+
+
+{% endblock %}

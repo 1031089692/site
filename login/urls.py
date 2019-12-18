@@ -18,7 +18,7 @@ from django.urls import path, re_path, include
 from test_app import views
 
 urlpatterns = [
-    path('', views.index),   # 不知道为啥不能直接跳到index，这里加个path，临时解决方案
+    # path('', views.index),   # 不知道为啥不能直接跳到index，这里加个path，临时解决方案
     path('admin/', admin.site.urls),
     path('login/', views.login),
     path('index/', views.index, name='shouye'),

@@ -323,14 +323,15 @@
             <!-- /.search form -->
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu">
-                <li class="active">
-                    <a href="/CBV_app/order_list/">
-                        <i class="fa fa-dashboard"></i> <span>订单列表</span>
+                <li class="active liebiao">
+                    <a>
+                        <i class="fa fa-dashboard "></i> <span>用户列表</span>
+                        {% csrf_token %}
                     </a>
                 </li>
                 <li>
                     <a href="/static/adminlte/pages/widgets.html">
-                        <i class="fa fa-th"></i> <span>Widgets</span>
+                        <i class="fa fa-th"></i> <span>接口列表</span>
                         <small class="badge pull-right bg-green">new</small>
                     </a>
                 </li>
@@ -452,9 +453,6 @@
 
 </div><!-- ./wrapper -->
 
-<!-- add new calendar event modal -->
-<a href="xxxx" target="_blank" title="xxx">xxxx</a> - Collect from <a href="xxxx" title="xxxxx" target="_blank">xxxx</a>
-
 <!-- jQuery 2.0.2 -->
 <script src="/static/adminlte/js/jquery.min.js"></script>
 <!-- jQuery UI 1.10.3 -->
@@ -487,5 +485,62 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="/static/adminlte/js/AdminLTE/dashboard.js" type="text/javascript"></script>
 
+{% block  js %}
+
+{% endblock %}
+
 </body>
 </html>
+
+<script>
+    $(".liebiao").click(function () {
+        $.ajax({
+            url: "/CBV_app/sytzlist/",
+            type: "get",
+            async: false,
+            success: function (response) {
+                var res = JSON.parse(response);
+                console.log(res);
+                if (res.code)
+                    location.href = "/CBV_app/get_customer/";
+                $.ajax({
+                    url: "/CBV_app/post_customer/",
+                    type: "post",
+                    async: false,
+                    data: {
+                        csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                        content: '',
+                    },
+                    success: function (response) {
+                        var obj = response.data;
+                        console.log(obj.length);
+                        var html = '';
+                        for (var i = 0; i < obj.length; i++) {
+                            html = html + '<td>' + obj[i].id + '</td>';
+                            html = html + '<td>' + obj[i].name + '</td>';
+                            html = html + '<td>' + obj[i].WX_nickname + '</td>';
+                            html = html + '<td>' + obj[i].gender + '</td>';
+                            html = html + '<td>' + obj[i].age + '</td>';
+                            html = html + '<td>' + obj[i].phone_number + '</td>';
+                            html = html + '<td>' + obj[i].city + '</td>';
+                            html = html + '<td>' + obj[i].create_time + '</td>';
+                            html = html + '<td>' + obj[i].vip_grade + '</td>';
+                            html = html + '<td>' + obj[i].is_test + '</td>';
+                        }
+                        $('.gl_text').html(html)
+                    },
+                    error: function () {
+                        alert("查询失败！")
+                    }
+                })
+            }
+        })
+    })
+</script>
+
+<script>
+    $(".liebiao").click(function () {
+
+    })
+
+</script>
