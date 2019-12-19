@@ -140,6 +140,7 @@
             console.log(obj.length);
             var html = '';
             for (var i=0; i<obj.length; i++){
+                html = html + '<tr>';
                 html = html + '<td>' + obj[i].id + '</td>';
                 html = html + '<td>' + obj[i].name + '</td>';
                 html = html + '<td>' + obj[i].WX_nickname + '</td>';
@@ -150,8 +151,9 @@
                 html = html + '<td>' + obj[i].create_time + '</td>';
                 html = html + '<td>' + obj[i].vip_grade + '</td>';
                 html = html + '<td>' + obj[i].is_test + '</td>';
+                html = html + '</tr>';
             }
-            $('.gl_text').html(html)
+            $('#example2 tbody').html(html)
         },
             error:function () {
                 alert("查询失败！")
