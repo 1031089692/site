@@ -240,3 +240,4 @@ def del_ajax_order(request,del_id):
 
 def error(request):
     return render(request, "error.html")
+

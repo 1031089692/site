@@ -17,17 +17,26 @@ from  django.db.models import Q
 # Create your views here.
 
 from django.views import View
+from rest_framework.views import APIView
+from rest_framework.request import Request
 
 
-class Login(View):
+class Login(APIView):
 
     def get(self, request):
+        self.dispatch()
         return HttpResponse("ok")
+
+    def post(self, request):
+        pass
 
 
 class Starter(View):
     def get(self, request):
         return render(request, 'base.html')
+
+    def post(self, request):
+        pass
 
 
 def get_customer(request):

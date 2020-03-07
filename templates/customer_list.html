@@ -1,14 +1,18 @@
 <style>
     .test_input{
         width: 180px;
-        height: 35px;
+        height: 34px;
     }
     .placeholder{
         padding: 0 0 10px 0;
     }
     .test_button{
-        height: 30px;
+         text-align:center;
+         padding:0;
+         margin:0;
     }
+
+    {#vertical-align标签，标签上下微调#}
 </style>
 
 {% extends "base.html" %}
@@ -28,8 +32,8 @@
             </ol>
 
             <div class="placeholder"></div>
-            <input type="text" name="q" class="test_input" placeholder="按用户姓名过滤"/>
-            <button type="text" class="test_button">Search</button>
+            <input type="text" name="q" class="from-control test_input" placeholder="按用户姓名过滤"/>
+            <button class="btn btn-success test_button" style="vertical-align: 0">Search</button>
             {% csrf_token %}
         </section>
 
@@ -71,6 +75,7 @@
                                           <td></td>
                                           <td></td>
                                           <td></td>
+
 {#                                        <td>{{ forloop.counter|add:var }}</td>#}
 {#                                        <td>{{ user.name }}</td>#}
 {#                                        <td>{{ user.WX_nickname }}</td>#}

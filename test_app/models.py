@@ -10,6 +10,9 @@ class UserInfo(models.Model):
     email = models.CharField(max_length=32)
     r_pwd = models.CharField(max_length=32)
 
+    def __str__(self):
+        return "{} : {}".format(self.user, self.pwd)
+
 
 class AccessFrequencyVerification(models.Model):
     # 用户访问频率表
